@@ -21,3 +21,12 @@ export function subtract(a: number, b: number): number {
 function internalHelper(): number {
     return 0;
 }
+
+/** Client options. */
+export interface Options {
+    retries: number;
+}
+
+export type Mode = "fast" | "safe";
+
+type Hidden = string;
