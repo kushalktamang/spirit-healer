@@ -1,0 +1,176 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "options": {
+    "typeAware": true
+  },
+  "plugins": ["typescript", "unicorn", "import"],
+  "categories": {
+    // Code that is flat-out wrong — always a hard error
+    "correctness": "error",
+    // Code that's very likely a mistake
+    "suspicious": "error",
+    // Nitpicky style stuff — warn, don't block
+    "pedantic": "warn",
+    // Formatting/consistency preferences — warn only
+    "style": "warn",
+    // Performance smells — warn only
+    "perf": "warn"
+  },
+  "rules": {
+    "sort-imports": "off",
+    "sort-vars": "off",
+    "one-var": "off",
+    "sort-keys": "off",
+    "no-magic-numbers": "off",
+    "no-ternary": "off",
+    "id-length": "off",
+    "import/no-named-export": "off",
+    "capitalized-comments": "off",
+    "arrow-body-style": "off",
+    "max-lines-per-function": "off",
+    "new-cap": "off",
+    "max-params": "off",
+    "no-duplicate-imports": "off",
+
+    // console.log left in by accident is one of the most common PR review nitpicks —
+    // worth catching automatically instead of relying on humans to notice.
+    "no-console": "off", // warn in pr
+
+    // A `debugger` statement shipped to production halts execution in devtools.
+    "no-debugger": "error",
+
+    // Actually worth explicitly turning OFF — this rule pushes you toward `undefined`
+    // over `null`, but a lot of codebases (and APIs) intentionally use `null` for
+    // "explicitly empty." Worth deciding on purpose rather than inheriting the default.
+    "unicorn/no-null": "off",
+
+    "import/no-unassigned-import": [
+      "warn",
+      {
+        "allow": ["**/*.css", "**/*.scss", "**/*.less"]
+      }
+    ],
+    "import/no-cycle": "error",
+    "import/no-nodejs-modules": "off",
+
+    // Forces === / !== instead of == / != (avoids type coercion bugs)
+    "eqeqeq": "error",
+
+    // Use arrow functions for callbacks instead of function() {}
+    "prefer-arrow-callback": "error",
+
+    // Use `${x}` template strings instead of string concatenation with +
+    "prefer-template": "error",
+
+    // ---- Type-safety (these need typeAware: true to actually run) ----
+
+    "typescript/prefer-readonly-parameter-types": "off",
+
+    // Bans writing `any` directly — forces you to type things properly
+    "typescript/no-explicit-any": "error",
+
+    // Bans the `!` operator (e.g. `user!.name`) which tells TS "trust me, this isn't null"
+    // — that's exactly the kind of assumption that blows up in production
+    "typescript/no-non-null-assertion": "error",
+
+    // Stops you from passing an `any`-typed value into a function expecting a specific type
+    "typescript/no-unsafe-argument": "error",
+
+    // Stops assigning an `any`-typed value to a variable with a specific type
+    // (the `any` silently "infects" the variable otherwise)
+    "typescript/no-unsafe-assignment": "error",
+
+    // Stops calling something typed as `any` as if it were a function
+    "typescript/no-unsafe-call": "error",
+
+    // Stops accessing a property on an `any`-typed value (e.g. `data.foo` when `data: any`)
+    "typescript/no-unsafe-member-access": "error",
+
+    // Stops a function from returning an `any`-typed value when it declares a specific return type
+    "typescript/no-unsafe-return": "error",
+
+    // Stops `as SomeType` casts that aren't actually provable — i.e. lying to the compiler
+    "typescript/no-unsafe-type-assertion": "error",
+
+    // Catches promises that are created but never awaited or .catch()'d
+    // (classic bug: an async call silently fails and nothing handles it)
+    "typescript/no-floating-promises": "error",
+
+    // Catches promises used somewhere that doesn't expect one — e.g. an `if (asyncFn())`
+    // which always evaluates truthy because it's checking the Promise object, not the result
+    "typescript/no-misused-promises": "error",
+
+    // Stops you from `await`-ing something that isn't actually a Promise (a wasted no-op)
+    "typescript/await-thenable": "error",
+
+    // Warns when you use a function/type marked @deprecated in its JSDoc
+    "typescript/no-deprecated": "warn",
+
+    // ---- Stricter runtime behavior around operators/booleans ----
+    "typescript/restrict-plus-operands": [
+      "error",
+      {
+        // don't allow `any + any` — forces you to know the real types
+        "allowAny": false,
+
+        // disallow `true + 1` style nonsense
+        "allowBoolean": false,
+
+        // disallow `null + x` / `undefined + x`
+        "allowNullish": false,
+
+        // disallow mixing number + string with `+` (ambiguous: concat or add?)
+        "allowNumberAndString": false,
+
+        // disallow using a regex literal with `+`
+        "allowRegExp": false
+      }
+    ],
+
+    // Only allows strings and numbers inside `${...}` template literals.
+    // Blocks things like `${someObject}` which silently prints "[object Object]"
+    // instead of failing loudly.
+    "typescript/restrict-template-expressions": "error",
+
+    "typescript/strict-boolean-expressions": [
+      "error",
+      {
+        // Disallows `if (count)` — forces `if (count > 0)` instead.
+        // Without this, `if (count)` is false for both 0 and NaN, which is
+        // rarely what you actually meant to check.
+        "allowNumber": false,
+        "allowString": false,
+
+        // Disallows `if (user)` when `user` could be `null`/`undefined`.
+        // Forces `if (user != null)` so it's explicit you're checking for
+        // existence, not some other falsy state.
+        "allowNullableObject": false
+      }
+    ],
+
+    // Prefers `x ?? y` over `x || y` when checking for null/undefined.
+    // `||` also triggers on `0`, `""`, and `false` — which is usually
+    // not what you want (e.g. `count || 10` wrongly replaces a real 0 with 10).
+    "typescript/prefer-nullish-coalescing": "error",
+
+    // Prefers `user?.address?.city` over `user && user.address && user.address.city`.
+    // Same behavior, much less noise.
+    "typescript/prefer-optional-chain": "error",
+
+    // Prefers `for (const item of items)` over `for (let i = 0; i < items.length; i++)`
+    // when you don't actually need the index. Cleaner, fewer off-by-one bugs.
+    "typescript/prefer-for-of": "warn",
+
+    // Flags `as SomeType` casts that don't do anything — TypeScript already
+    // knows the type, so the assertion is just dead code.
+    "typescript/no-unnecessary-type-assertion": "warn",
+
+    // Enforces `import type { Foo } from "..."` for imports only used as types,
+    // instead of a regular `import { Foo } from "..."`.
+    // Keeps type-only imports from accidentally being bundled into your JS output.
+    "typescript/consistent-type-imports": "warn"
+  },
+  // Files/folders oxlint should never lint — build output and dependencies,
+  // since linting compiled or third-party code is pointless and slow.
+  "ignorePatterns": ["dist", "build", ".next", "node_modules", "public/**"]
+}

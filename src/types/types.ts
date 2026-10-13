@@ -1,5 +1,4 @@
-type ChunkKind =
-  "function" | "class" | "interface" | "type" | "variable" | "enum";
+type ChunkKind = "function" | "class" | "method" | "interface" | "type" | "variable" | "enum";
 
 interface CodeChunk {
   /** Stable identifier: `${filepath}::${name}`. Survives reordering and unrelated edits. */
@@ -16,4 +15,4 @@ interface CodeChunk {
   endLine: number;
 }
 
-export { ChunkKind, CodeChunk };
+export type { ChunkKind, CodeChunk };

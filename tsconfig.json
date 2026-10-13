@@ -4,7 +4,7 @@
     "moduleResolution": "NodeNext",
     "target": "ES2022",
     "lib": ["ES2022", "dom"],
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "types": ["node"],
     "strict": true,
@@ -23,8 +23,8 @@
     "erasableSyntaxOnly": true,
     "noErrorTruncation": false,
     "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": true
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "dist"]
 }

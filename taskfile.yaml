@@ -1,0 +1,17 @@
+version: "3"
+
+tasks:
+  run:
+    desc: start dev script
+    cmds:
+      - node --run dev
+
+  fmt:
+    desc: format all packages
+    cmds:
+      - node --run fmt
+
+  lint:
+    desc: lint all the packages
+    cmds:
+      - node --run lint

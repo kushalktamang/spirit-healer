@@ -1,5 +1,5 @@
 {
-  "name": "docsxide",
+  "name": "spirit-healer",
   "version": "1.0.0",
   "description": "Self-Healing Technical Documentation",
   "license": "ISC",
@@ -8,12 +8,20 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "test": "vitest run",
-    "lint": "tsc --noEmit"
+    "linting": "tsc --noEmit",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "oxfmt": "^0.71.0",
+    "oxlint": "^1.86.0",
+    "oxlint-tsgolint": "^7.0.2003",
     "tsx": "^4.23.15",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.4"
   }
 }
