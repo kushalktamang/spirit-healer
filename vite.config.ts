@@ -12,7 +12,7 @@ export default defineConfig({
     "*": "vp check --fix",
   },
   fmt: {
-    ignorePatterns: ["dist", "build", "node_modules", "packages/httpStatus/src/**/*.ts"],
+    ignorePatterns: ["dist", "build", "node_modules"],
     semi: true,
     sortPackageJson: true,
     sortImports: {
@@ -66,6 +66,7 @@ export default defineConfig({
       "no-console": "off",
       "no-debugger": "error",
       "unicorn/no-null": "off",
+      "unicorn/filename-case": "off",
       "import/no-unassigned-import": [
         "warn",
         {
@@ -116,7 +117,7 @@ export default defineConfig({
       "typescript/consistent-type-imports": "warn",
       "vite-plus/prefer-vite-plus-imports": "error",
     },
-    ignorePatterns: ["dist", "build", ".next", "node_modules", "public/**"],
+    ignorePatterns: ["dist", "build", "node_modules", "tests/**"],
     jsPlugins: [
       {
         name: "vite-plus",

@@ -10,6 +10,18 @@ const isExportedClass = (
   node.name !== undefined &&
   hasModifier(node, ts.SyntaxKind.ExportKeyword);
 
+const isPublicMehtod = (
+  member: ts.ClassElement,
+): member is ts.MethodDeclaration & {
+  name: ts.Identifier;
+  body: ts.Block;
+} =>
+  ts.isMethodDeclaration(member) &&
+  ts.isIdentifier(member.name) &&
+  member.body !== undefined &&
+  !hasModifier(member, ts.SyntaxKind.PrivateKeyword) &&
+  !hasModifier(member, ts.SyntaxKind.ProtectedKeyword);
+
 const parseClass = (
   filepath: string,
   sourceFile: ts.SourceFile,
@@ -39,17 +51,7 @@ const parseClass = (
 
   const methodChunks: CodeChunk[] = [];
 
-  for (const member of node.members) {
-    if (
-      !ts.isMethodDeclaration(member) ||
-      !ts.isIdentifier(member.name) ||
-      member.body === undefined ||
-      hasModifier(member, ts.SyntaxKind.PrivateKeyword) ||
-      hasModifier(member, ts.SyntaxKind.ProtectedKeyword)
-    ) {
-      continue;
-    }
-
+  for (const member of node.members.filter(isPublicMehtod)) {
     const methodName = member.name.text;
 
     const methodChunk: CodeChunk = {

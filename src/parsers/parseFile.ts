@@ -2,6 +2,7 @@ import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
 import { isExportedClass, parseClass } from "./class.js";
+import { isExportedEnum, parseEnum } from "./enum.js";
 import { isExportedFunction, parseFunction } from "./function.js";
 import { isExportedInterface, parseInterface } from "./interface.js";
 import { isExportedType, parseType } from "./type.js";
@@ -20,6 +21,8 @@ const parseFile = (filepath: string, source: string): CodeChunk[] => {
       chunks.push(parseInterface(filepath, sourceFile, node));
     } else if (isExportedType(node)) {
       chunks.push(parseType(filepath, sourceFile, node));
+    } else if (isExportedEnum(node)) {
+      chunks.push(parseEnum(filepath, sourceFile, node));
     }
   }
 
