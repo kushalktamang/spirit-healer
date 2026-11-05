@@ -1,27 +1,31 @@
 {
   "name": "spirit-healer",
   "version": "1.0.0",
+  "private": true,
   "description": "Self-Healing Technical Documentation",
   "license": "ISC",
-  "author": "kushalktamang",
+  "author": "kushalktamang <kushalktamang@gmail.com>  (https://github.com/kushalktamang)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kushalktamang/spirit-healer.git"
+  },
   "type": "module",
-  "main": "index.js",
   "scripts": {
     "dev": "tsx src/index.ts",
-    "linting": "tsc --noEmit",
-    "lint": "oxlint",
-    "lint:fix": "oxlint --fix",
-    "fmt": "oxfmt",
-    "fmt:check": "oxfmt --check",
-    "test": "vitest"
+    "build": "vp pack",
+    "typecheck": "tsc --noEmit",
+    "check": "vp check",
+    "test": "vp test",
+    "prepare": "vp config"
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
-    "oxfmt": "^0.71.0",
-    "oxlint": "^1.86.0",
-    "oxlint-tsgolint": "^7.0.2003",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^5.0.4"
-  }
+    "vite-plus": "catalog:"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@12.6.0"
 }

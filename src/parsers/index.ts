@@ -1,11 +1,9 @@
 import ts from "typescript";
+
 import type { CodeChunk } from "../types/types.js";
-import { isExportedFunction, parseFunction } from "./function.js";
 import { isExportedClass, parseClass } from "./class.js";
-import {
-  isExportedInterface,
-  parseInterface,
-} from "./interface.js";
+import { isExportedFunction, parseFunction } from "./function.js";
+import { isExportedInterface, parseInterface } from "./interface.js";
 import { isExportedType, parseType } from "./type.js";
 
 const parseFile = (filepath: string, source: string): CodeChunk[] => {

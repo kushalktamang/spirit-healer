@@ -1,25 +1,21 @@
 import { readFileSync } from "node:fs";
-import { beforeAll, describe, expect, it } from "vitest";
+
+import { beforeAll, describe, expect, it } from "vite-plus/test";
+
 import parseFile from "../src/parsers/index.js";
 import type { CodeChunk } from "../src/types/types.js";
 
 const FIXTURE_PATH = "tests/fixtures/sample.ts";
-const fixtureSource = readFileSync(
-  new URL("./fixtures/sample.ts", import.meta.url),
-  "utf8",
-);
+const fixtureSource = readFileSync(new URL("fixtures/sample.ts", import.meta.url), "utf8");
 
 /** Parse a small inline snippet. Use this for edge cases instead of growing the fixture. */
-const parseInline = (source: string): CodeChunk[] =>
-  parseFile("src/inline.ts", source);
+const parseInline = (source: string): CodeChunk[] => parseFile("src/inline.ts", source);
 
 /** Find a chunk by name, failing with a readable message instead of returning undefined. */
 const byName = (chunks: CodeChunk[], name: string): CodeChunk => {
   const chunk = chunks.find((c) => c.name === name);
-  if (!chunk) {
-    throw new Error(
-      `No chunk named "${name}". Found: ${chunks.map((c) => c.name).join(", ")}`,
-    );
+  if (chunk === undefined) {
+    throw new Error(`No chunk named "${name}". Found: ${chunks.map((c) => c.name).join(", ")}`);
   }
   return chunk;
 };
@@ -61,9 +57,7 @@ describe("parseFile: sample.ts fixture", () => {
     it("cuts a function signature off before the body", () => {
       const subtract = byName(chunks, "subtract");
 
-      expect(subtract.signature).toBe(
-        "export function subtract(a: number, b: number): number",
-      );
+      expect(subtract.signature).toBe("export function subtract(a: number, b: number): number");
       expect(subtract.content).toContain("return a - b;");
     });
 
@@ -129,7 +123,7 @@ describe("parseFile: sample.ts fixture", () => {
 
   describe("doc comments", () => {
     it("keeps JSDoc tags exactly once", () => {
-      const docComment = byName(chunks, "Calculator.add").docComment;
+      const { docComment } = byName(chunks, "Calculator.add");
 
       expect(docComment).toContain("Adds two numbers.");
       expect(docComment).toContain("@param a first number");
@@ -176,10 +170,7 @@ describe("parseFile: edge cases", () => {
       "}",
     ].join("\n");
 
-    expect(parseInline(source).map((c) => c.name)).toEqual([
-      "Service",
-      "Service.run",
-    ]);
+    expect(parseInline(source).map((c) => c.name)).toEqual(["Service", "Service.run"]);
   });
 
   it("handles an empty exported class", () => {
@@ -201,9 +192,7 @@ describe("parseFile: edge cases", () => {
 
   it("keeps ids stable when unrelated code is added above", () => {
     const before = parseInline("export function add() {}");
-    const after = parseInline(
-      "export function multiply() {}\nexport function add() {}",
-    );
+    const after = parseInline("export function multiply() {}\nexport function add() {}");
 
     const addBefore = byName(before, "add");
     const addAfter = byName(after, "add");
