@@ -6,6 +6,7 @@ import { isExportedEnum, parseEnum } from "./enum.js";
 import { isExportedFunction, parseFunction } from "./function.js";
 import { isExportedInterface, parseInterface } from "./interface.js";
 import { isExportedType, parseType } from "./type.js";
+import { isExportedVariable, parseVariable } from "./variable.js";
 
 const parseFile = (filepath: string, source: string): CodeChunk[] => {
   const sourceFile = ts.createSourceFile(filepath, source, ts.ScriptTarget.ES2022, true);
@@ -23,6 +24,8 @@ const parseFile = (filepath: string, source: string): CodeChunk[] => {
       chunks.push(parseType(filepath, sourceFile, node));
     } else if (isExportedEnum(node)) {
       chunks.push(parseEnum(filepath, sourceFile, node));
+    } else if (isExportedVariable(node)) {
+      chunks.push(...parseVariable(filepath, sourceFile, node));
     }
   }
 

@@ -40,3 +40,14 @@ export enum Level {
 enum Internal {
   A,
 }
+
+/** Multiplies two numbers. */
+export const multiply = (a: number, b: number): number => a * b;
+
+export const divide = (a: number, b: number): number => {
+  return a / b;
+};
+
+export const MAX = 5;
+
+const privateFn = () => 1;
