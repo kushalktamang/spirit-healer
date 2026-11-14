@@ -1,11 +1,17 @@
 import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
-import { addDocComment, getLine, hasModifier } from "./helpers.js";
+import { addDocComment, getLine, isExported } from "./helpers.js";
 
-const isExportedVariable = (node: ts.Statement): node is ts.VariableStatement => {
-  return ts.isVariableStatement(node) && hasModifier(node, ts.SyntaxKind.ExportKeyword);
-};
+const isExportedVariable = (
+  node: ts.Statement,
+  exportedNames: Set<string>,
+): node is ts.VariableStatement =>
+  ts.isVariableStatement(node) &&
+  node.declarationList.declarations.some(
+    (declaration) =>
+      ts.isIdentifier(declaration.name) && isExported(node, declaration.name.text, exportedNames),
+  );
 
 /**
  * Decisions:
@@ -24,6 +30,7 @@ const parseVariable = (
   filepath: string,
   sourceFile: ts.SourceFile,
   node: ts.VariableStatement,
+  exportedNames: Set<string>,
 ): CodeChunk[] => {
   const chunks: CodeChunk[] = [];
   const { declarations } = node.declarationList;
@@ -32,6 +39,7 @@ const parseVariable = (
     // Ignore destructuring and non-function variables.
     if (
       ts.isIdentifier(declaration.name) &&
+      isExported(node, declaration.name.text, exportedNames) &&
       declaration.initializer !== undefined &&
       (ts.isArrowFunction(declaration.initializer) ||
         ts.isFunctionExpression(declaration.initializer))

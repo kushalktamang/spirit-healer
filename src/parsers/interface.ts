@@ -1,10 +1,13 @@
 import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
-import { addDocComment, getLine, hasModifier } from "./helpers.js";
+import { addDocComment, getLine, isExported } from "./helpers.js";
 
-const isExportedInterface = (node: ts.Statement): node is ts.InterfaceDeclaration =>
-  ts.isInterfaceDeclaration(node) && hasModifier(node, ts.SyntaxKind.ExportKeyword);
+const isExportedInterface = (
+  node: ts.Statement,
+  exportedNames: Set<string>,
+): node is ts.InterfaceDeclaration =>
+  ts.isInterfaceDeclaration(node) && isExported(node, node.name.text, exportedNames);
 
 const parseInterface = (
   filepath: string,

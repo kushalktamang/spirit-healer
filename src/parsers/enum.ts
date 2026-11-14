@@ -1,10 +1,13 @@
 import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
-import { addDocComment, getLine, hasModifier } from "./helpers.js";
+import { addDocComment, getLine, isExported } from "./helpers.js";
 
-const isExportedEnum = (node: ts.Statement): node is ts.EnumDeclaration =>
-  ts.isEnumDeclaration(node) && hasModifier(node, ts.SyntaxKind.ExportKeyword);
+const isExportedEnum = (
+  node: ts.Statement,
+  exportedNames: Set<string>,
+): node is ts.EnumDeclaration =>
+  ts.isEnumDeclaration(node) && isExported(node, node.name.text, exportedNames);
 
 const parseEnum = (
   filepath: string,

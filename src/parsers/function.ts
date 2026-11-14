@@ -1,15 +1,16 @@
 import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
-import { addDocComment, getLine, hasModifier } from "./helpers.js";
+import { addDocComment, getLine, isExported } from "./helpers.js";
 
 const isExportedFunction = (
   node: ts.Statement,
+  exportedNames: Set<string>,
 ): node is ts.FunctionDeclaration & { name: ts.Identifier; body: ts.Block } =>
   ts.isFunctionDeclaration(node) &&
   node.name !== undefined &&
   node.body !== undefined &&
-  hasModifier(node, ts.SyntaxKind.ExportKeyword);
+  isExported(node, node.name.text, exportedNames);
 
 // parse function
 const parseFunction = (

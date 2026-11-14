@@ -1,10 +1,13 @@
 import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
-import { addDocComment, getLine, hasModifier } from "./helpers.js";
+import { addDocComment, getLine, isExported } from "./helpers.js";
 
-const isExportedType = (node: ts.Statement): node is ts.TypeAliasDeclaration =>
-  ts.isTypeAliasDeclaration(node) && hasModifier(node, ts.SyntaxKind.ExportKeyword);
+const isExportedType = (
+  node: ts.Statement,
+  exportedNames: Set<string>,
+): node is ts.TypeAliasDeclaration =>
+  ts.isTypeAliasDeclaration(node) && isExported(node, node.name.text, exportedNames);
 
 const parseType = (
   filepath: string,
