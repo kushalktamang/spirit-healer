@@ -1,14 +1,15 @@
 import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
-import { addDocComment, getLine, hasModifier } from "./helpers.js";
+import { addDocComment, getLine, hasModifier, isExported } from "./helpers.js";
 
 const isExportedClass = (
   node: ts.Statement,
+  exportedNames: Set<string>,
 ): node is ts.ClassDeclaration & { name: ts.Identifier } =>
   ts.isClassDeclaration(node) &&
   node.name !== undefined &&
-  hasModifier(node, ts.SyntaxKind.ExportKeyword);
+  isExported(node, node.name.text, exportedNames);
 
 const isPublicMehtod = (
   member: ts.ClassElement,
