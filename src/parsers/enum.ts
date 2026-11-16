@@ -3,12 +3,14 @@ import ts from "typescript";
 import type { CodeChunk } from "../types/types.js";
 import { addDocComment, getLine, isExported } from "./helpers.js";
 
+// Checks whether an enum is exported.
 const isExportedEnum = (
   node: ts.Statement,
   exportedNames: Set<string>,
 ): node is ts.EnumDeclaration =>
   ts.isEnumDeclaration(node) && isExported(node, node.name.text, exportedNames);
 
+// Extracts the enum declaration and creates a chunk.
 const parseEnum = (
   filepath: string,
   sourceFile: ts.SourceFile,

@@ -3,6 +3,8 @@ import ts from "typescript";
 import type { CodeChunk } from "../types/types.js";
 import { addDocComment, getLine, isExported } from "./helpers.js";
 
+// Checks whether a statement is an exported function declaration
+// with a name and implementation body.
 const isExportedFunction = (
   node: ts.Statement,
   exportedNames: Set<string>,
@@ -12,7 +14,7 @@ const isExportedFunction = (
   node.body !== undefined &&
   isExported(node, node.name.text, exportedNames);
 
-// parse function
+// Extracts the function's information and creates a CodeChunk.
 const parseFunction = (
   filepath: string,
   sourceFile: ts.SourceFile,

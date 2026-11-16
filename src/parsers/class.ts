@@ -3,6 +3,7 @@ import ts from "typescript";
 import type { CodeChunk } from "../types/types.js";
 import { addDocComment, getLine, hasModifier, isExported } from "./helpers.js";
 
+// Checks whether a class is exported.
 const isExportedClass = (
   node: ts.Statement,
   exportedNames: Set<string>,
@@ -11,7 +12,8 @@ const isExportedClass = (
   node.name !== undefined &&
   isExported(node, node.name.text, exportedNames);
 
-const isPublicMehtod = (
+// Identifies eligible public method declarations.
+const isPublicMethod = (
   member: ts.ClassElement,
 ): member is ts.MethodDeclaration & {
   name: ts.Identifier;
@@ -23,6 +25,7 @@ const isPublicMehtod = (
   !hasModifier(member, ts.SyntaxKind.PrivateKeyword) &&
   !hasModifier(member, ts.SyntaxKind.ProtectedKeyword);
 
+// Extracts the class and creates separate chunks for its eligible methods.
 const parseClass = (
   filepath: string,
   sourceFile: ts.SourceFile,
@@ -52,7 +55,7 @@ const parseClass = (
 
   const methodChunks: CodeChunk[] = [];
 
-  for (const member of node.members.filter(isPublicMehtod)) {
+  for (const member of node.members.filter(isPublicMethod)) {
     const methodName = member.name.text;
 
     const methodChunk: CodeChunk = {

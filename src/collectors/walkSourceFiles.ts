@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { isSourceFile, SKIP_DIRECTORIES } from "./isSourceFile.js";
 
+// Inspects a provided path and wraps filesystem errors with useful context.
 const lstatCodePath = async (
   codePath: string,
   absolutePath: string,
@@ -18,10 +19,12 @@ const lstatCodePath = async (
   }
 };
 
+// Recursively traverses directories and collects valid source-file paths.
 const walkSourceFiles = async (rootDir: string, codePaths: string[]): Promise<string[]> => {
   const root = path.resolve(rootDir);
   const files = new Set<string>();
 
+  // Internal recursive function that traverses directory entries.
   const walk = async (absolutePath: string): Promise<void> => {
     const entries = await readdir(absolutePath, {
       withFileTypes: true,

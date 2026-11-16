@@ -3,12 +3,14 @@ import ts from "typescript";
 import type { CodeChunk } from "../types/types.js";
 import { addDocComment, getLine, isExported } from "./helpers.js";
 
+// Checks whether a type alias is exported.
 const isExportedType = (
   node: ts.Statement,
   exportedNames: Set<string>,
 ): node is ts.TypeAliasDeclaration =>
   ts.isTypeAliasDeclaration(node) && isExported(node, node.name.text, exportedNames);
 
+// Extracts the type declaration and creates a chunk.
 const parseType = (
   filepath: string,
   sourceFile: ts.SourceFile,

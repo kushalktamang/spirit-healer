@@ -2,13 +2,18 @@ import ts from "typescript";
 
 import type { CodeChunk } from "../types/types.js";
 
+// 	Converts a TypeScript source position into a 1-based line number.
 const getLine = (sourceFile: ts.SourceFile, pos: number): number =>
   sourceFile.getLineAndCharacterOfPosition(pos).line + 1;
 
+// Checks whether a TypeScript node has a specific modifier,
+// such as export, private, or protected.
 const hasModifier = (node: ts.Node, kind: ts.SyntaxKind): boolean =>
   ts.canHaveModifiers(node) &&
   (ts.getModifiers(node)?.some((modifier) => modifier.kind === kind) ?? false);
 
+// Collects names exported through named export declarations
+// and certain default export assignments.
 const collectExportedNames = (sourceFile: ts.SourceFile): Set<string> => {
   const exportedNames = new Set<string>();
 
@@ -39,9 +44,11 @@ const collectExportedNames = (sourceFile: ts.SourceFile): Set<string> => {
   return exportedNames;
 };
 
+// 	Determines whether a declaration is exported directly or through an export list.
 const isExported = (node: ts.Node, name: string, exportedNames: Set<string>): boolean =>
   hasModifier(node, ts.SyntaxKind.ExportKeyword) || exportedNames.has(name);
 
+// Extracts JSDoc comments and attaches them to a chunk.
 const addDocComment = (chunk: CodeChunk, node: ts.Node, sourceFile: ts.SourceFile): void => {
   const comments = ts.getJSDocCommentsAndTags(node);
 
