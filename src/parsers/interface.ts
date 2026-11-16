@@ -3,12 +3,14 @@ import ts from "typescript";
 import type { CodeChunk } from "../types/types.js";
 import { addDocComment, getLine, isExported } from "./helpers.js";
 
+// Checks whether an interface is exported.
 const isExportedInterface = (
   node: ts.Statement,
   exportedNames: Set<string>,
 ): node is ts.InterfaceDeclaration =>
   ts.isInterfaceDeclaration(node) && isExported(node, node.name.text, exportedNames);
 
+// Extracts the interface declaration and creates a chunk.
 const parseInterface = (
   filepath: string,
   sourceFile: ts.SourceFile,

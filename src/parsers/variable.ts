@@ -3,6 +3,7 @@ import ts from "typescript";
 import type { CodeChunk } from "../types/types.js";
 import { addDocComment, getLine, isExported } from "./helpers.js";
 
+// Checks whether a variable statement contains at least one exported identifier.
 const isExportedVariable = (
   node: ts.Statement,
   exportedNames: Set<string>,
@@ -26,6 +27,8 @@ const isExportedVariable = (
  *
  * Note: Multiple declarations in one statement share the same JSDoc comment.
  */
+
+// Extracts eligible function-valued variable declarations into chunks.
 const parseVariable = (
   filepath: string,
   sourceFile: ts.SourceFile,

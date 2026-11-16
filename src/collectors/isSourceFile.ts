@@ -1,5 +1,7 @@
 import path from "node:path";
 
+// Directories that should be excluded, such as
+// node_modules, dist, .git, and test directories.
 const SKIP_DIRECTORIES = new Set([
   "node_modules",
   "dist",
@@ -11,8 +13,11 @@ const SKIP_DIRECTORIES = new Set([
   "test",
 ]);
 
+// Supported extensions such as
+// .ts, .tsx, .js, .jsx, .mjs, etc.
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts"]);
 
+// Checks whether a given file should be included.
 const isSourceFile = (filePath: string): boolean => {
   const normalizedPath = filePath.replaceAll("\\", "/");
   const segments = normalizedPath.split("/");

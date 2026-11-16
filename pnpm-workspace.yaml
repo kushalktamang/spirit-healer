@@ -1,6 +1,9 @@
 allowBuilds:
   esbuild: true
 catalog:
+  "@types/node": ^26.6.3
+  tsx: ^4.23.15
+  typescript: ^5.9.3
   vite: npm:@voidzero-dev/vite-plus-core@1.2.0
   vite-plus: 1.2.0
 overrides:
